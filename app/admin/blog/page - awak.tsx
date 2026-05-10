@@ -3,29 +3,25 @@ import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
 import CreateBlogForm from "@/components/CreateBlogForm";
 import DeleteBlogButton from "@/components/DeleteBlogButton";
-import { Blog as PrismaBlog } from "@prisma/client";
-
-// ✅ Tipe blog lengkap dengan relasi branch
-type BlogWithBranch = PrismaBlog & {
-  branch: { name: string } | null;
-};
 
 export default async function AdminBlogPage() {
   const session = await getAdminSession();
 
-  // Ambil semua branch untuk form
   const branches = await prisma.branch.findMany({
     orderBy: { name: "asc" },
   });
 
-  // Ambil blog sesuai role admin
-  const blogs: BlogWithBranch[] = await prisma.blog.findMany({
+  const blogs = await prisma.blog.findMany({
     where:
       session?.role === "ADMIN_CABANG" && session?.branchId
         ? { branchId: session.branchId }
         : {},
-    include: { branch: true }, // include relasi branch
-    orderBy: { createdAt: "desc" },
+    include: {
+      branch: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   return (
@@ -43,13 +39,11 @@ export default async function AdminBlogPage() {
           </p>
         </div>
 
-        {/* Form untuk membuat blog baru */}
         <CreateBlogForm
           branches={branches}
           role={session?.role || "ADMIN_CABANG"}
         />
 
-        {/* Tabel blog */}
         <div className="mt-8 overflow-hidden rounded-3xl bg-white shadow-sm">
           <table className="w-full text-left text-sm">
             <thead className="bg-slate-50 text-slate-500">
@@ -63,7 +57,7 @@ export default async function AdminBlogPage() {
             </thead>
 
             <tbody>
-              {blogs.map((blog: BlogWithBranch) => (
+              {blogs.map((blog) => (
                 <tr key={blog.id} className="border-t border-slate-100">
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-4">
@@ -72,20 +66,27 @@ export default async function AdminBlogPage() {
                         alt={blog.title}
                         className="h-14 w-14 rounded-2xl object-cover"
                       />
+
                       <div>
-                        <p className="font-bold text-slate-900">{blog.title}</p>
+                        <p className="font-bold text-slate-900">
+                          {blog.title}
+                        </p>
                         <p className="text-slate-500">{blog.slug}</p>
                       </div>
                     </div>
                   </td>
 
-                  <td className="px-6 py-5 text-slate-600">{blog.category}</td>
+                  <td className="px-6 py-5 text-slate-600">
+                    {blog.category}
+                  </td>
 
                   <td className="px-6 py-5 text-slate-600">
                     {blog.branch?.name || "Global"}
                   </td>
 
-                  <td className="px-6 py-5 text-slate-600">{blog.date}</td>
+                  <td className="px-6 py-5 text-slate-600">
+                    {blog.date}
+                  </td>
 
                   <td className="px-6 py-5">
                     <div className="flex gap-2">
