@@ -1,0 +1,42 @@
+export const schedules = [
+  {
+    id: 1,
+    branchSlug: "tianyar",
+    program: "Pelatihan Tata Boga",
+    date: "20 Mei 2026",
+    time: "09:00 - 12:00",
+    quota: "20 Peserta",
+  },
+  {
+    id: 2,
+    branchSlug: "tianyar",
+    program: "Pelatihan Housekeeping",
+    date: "25 Mei 2026",
+    time: "13:00 - 16:00",
+    quota: "15 Peserta",
+  },
+  {
+    id: 3,
+    branchSlug: "singaraja",
+    program: "Komputer Perkantoran",
+    date: "22 Mei 2026",
+    time: "09:00 - 11:00",
+    quota: "25 Peserta",
+  },
+  {
+    id: 4,
+    branchSlug: "denpasar",
+    program: "Digital Marketing",
+    date: "24 Mei 2026",
+    time: "10:00 - 13:00",
+    quota: "20 Peserta",
+  },
+  {
+    id: 5,
+    branchSlug: "pusat",
+    program: "Bahasa Jepang",
+    date: "27 Mei 2026",
+    time: "08:00 - 12:00",
+    quota: "30 Peserta",
+  },
+];

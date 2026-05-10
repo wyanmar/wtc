@@ -1,0 +1,233 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN_PUSAT
+  ADMIN_CABANG
+}
+
+enum RegistrationStatus {
+  BARU
+  DIHUBUNGI
+  PROSES
+  DITERIMA
+  DITOLAK
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  name     String
+  email    String   @unique
+  password String
+  role     UserRole @default(ADMIN_CABANG)
+
+  branchId Int?
+  branch   Branch? @relation(fields: [branchId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Branch {
+  id          Int    @id @default(autoincrement())
+  slug        String @unique
+  name        String
+  city        String
+  address     String
+  phone       String
+  email       String
+  image       String
+  maps        String
+  schedule    String
+  description String
+
+  users         User[]
+  programs      Program[]
+  promotions    Promotion[]
+  packages      Package[]
+  testimonials  Testimonial[]
+  galleries     Gallery[]
+  heroBanners   HeroBanner[]
+  schedules     Schedule[]
+  blogs         Blog[]
+  branchBlogs   BranchBlog[]
+  registrations Registration[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Program {
+  id          Int    @id @default(autoincrement())
+  slug        String @unique
+  title       String
+  category    String
+  duration    String
+  price       String
+  image       String
+  description String
+
+  branchId Int
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  registrations Registration[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Registration {
+  id      Int     @id @default(autoincrement())
+  name    String
+  phone   String
+  address String
+  notes   String?
+
+ followUpNote String?
+
+  status RegistrationStatus @default(BARU)
+
+  branchId Int
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  programId Int
+  program   Program @relation(fields: [programId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Promotion {
+  id          Int    @id @default(autoincrement())
+  title       String
+  label       String
+  description String
+  buttonText  String
+
+  branchId Int
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Package {
+  id       Int    @id @default(autoincrement())
+  title    String
+  price    String
+  duration String
+  badge    String
+  features String
+
+  branchId Int
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Testimonial {
+  id      Int    @id @default(autoincrement())
+  name    String
+  job     String
+  image   String
+  rating  Int
+  message String
+
+  branchId Int
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Schedule {
+  id      Int    @id @default(autoincrement())
+  program String
+  date    String
+  time    String
+  quota   String
+
+  branchId Int
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Blog {
+  id       Int    @id @default(autoincrement())
+  slug     String @unique
+  title    String
+  category String
+  date     String
+  image    String
+  excerpt  String
+  content  String
+
+  branchId Int?
+  branch   Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([branchId])
+}
+
+model BranchBlog {
+  id      Int    @id @default(autoincrement())
+  title   String
+  excerpt String
+  image   String
+  date    String
+
+  branchId Int
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Gallery {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
+  imageUrl    String
+  description String?
+  isActive    Boolean @default(true)
+
+  branchId Int?
+  branch   Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([branchId])
+}
+
+model HeroBanner {
+  id          Int     @id @default(autoincrement())
+  title       String
+  subtitle    String
+  description String
+  imageUrl    String
+  buttonText  String?
+  buttonLink  String?
+  isActive    Boolean @default(true)
+  sortOrder   Int     @default(0)
+
+  branchId Int?
+  branch   Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([branchId])
+}
+
